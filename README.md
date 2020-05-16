@@ -1,4 +1,4 @@
-# Transfer learning with convolutional neural networks for cancer survival prediction using gene-expression data
+# GeneExpImgTL
 
 This repository contains all the data and the code needed to reproduce the results presented in [[1]](#1).
 
