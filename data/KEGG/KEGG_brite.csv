@@ -1,0 +1,113 @@
+,Functional Annotation Group,Functional Annotation Subgroup,keggBriteId,Functional Annotation
+0,Pathway and Brite,Pathway maps,8901,KEGG pathway maps
+1,Pathway and Brite,Brite files,8902,BRITE hierarchy files
+2,Pathway and Brite,Brite files,8904,BRITE table files
+3,Pathway and Brite,Networks,8907,KEGG networks
+4,Genes and Proteins,Orthologs and modules,0001,KEGG Orthology (KO)
+5,Genes and Proteins,Orthologs and modules,0002,KEGG modules
+6,Genes and Proteins,Orthologs and modules,0003,KEGG reaction modules
+7,Genes and Proteins,Protein families: metabolism,1000,Enzymes
+8,Genes and Proteins,Protein families: metabolism,1001,Protein kinases
+9,Genes and Proteins,Protein families: metabolism,1009,Protein phosphatases and associated proteins
+10,Genes and Proteins,Protein families: metabolism,1002,Peptidases
+11,Genes and Proteins,Protein families: metabolism,1003,Glycosyltransferases
+12,Genes and Proteins,Protein families: metabolism,1005,Lipopolysaccharide biosynthesis proteins
+13,Genes and Proteins,Protein families: metabolism,1011,Peptidoglycan biosynthesis and degradation proteins
+14,Genes and Proteins,Protein families: metabolism,1004,Lipid biosynthesis proteins
+15,Genes and Proteins,Protein families: metabolism,1008,Polyketide biosynthesis proteins
+16,Genes and Proteins,Protein families: metabolism,1006,Prenyltransferases
+17,Genes and Proteins,Protein families: metabolism,1007,Amino acid related enzymes
+18,Genes and Proteins,Protein families: metabolism,0199,Cytochrome P450
+19,Genes and Proteins,Protein families: metabolism,0194,Photosynthesis proteins
+20,Genes and Proteins,Protein families: genetic information processing,3000,Transcription factors
+21,Genes and Proteins,Protein families: genetic information processing,3021,Transcription machinery
+22,Genes and Proteins,Protein families: genetic information processing,3019,Messenger RNA biogenesis
+23,Genes and Proteins,Protein families: genetic information processing,3041,Spliceosome
+24,Genes and Proteins,Protein families: genetic information processing,3011,Ribosome
+25,Genes and Proteins,Protein families: genetic information processing,3009,Ribosome biogenesis
+26,Genes and Proteins,Protein families: genetic information processing,3016,Transfer RNA biogenesis
+27,Genes and Proteins,Protein families: genetic information processing,3012,Translation factors
+28,Genes and Proteins,Protein families: genetic information processing,3110,Chaperones and folding catalysts
+29,Genes and Proteins,Protein families: genetic information processing,4131,Membrane trafficking
+30,Genes and Proteins,Protein families: genetic information processing,4121,Ubiquitin system
+31,Genes and Proteins,Protein families: genetic information processing,3051,Proteasome
+32,Genes and Proteins,Protein families: genetic information processing,3032,DNA replication proteins
+33,Genes and Proteins,Protein families: genetic information processing,3036,Chromosome and associated proteins
+34,Genes and Proteins,Protein families: genetic information processing,3400,DNA repair and recombination proteins
+35,Genes and Proteins,Protein families: genetic information processing,3029,Mitochondrial biogenesis
+36,Genes and Proteins,Protein families: signaling and cellular processes,2000,Transporters
+37,Genes and Proteins,Protein families: signaling and cellular processes,2044,Secretion system
+38,Genes and Proteins,Protein families: signaling and cellular processes,2042,Bacterial toxins
+39,Genes and Proteins,Protein families: signaling and cellular processes,2022,Two-component system
+40,Genes and Proteins,Protein families: signaling and cellular processes,2035,Bacterial motility proteins
+41,Genes and Proteins,Protein families: signaling and cellular processes,4812,Cytoskeleton proteins
+42,Genes and Proteins,Protein families: signaling and cellular processes,4147,Exosome
+43,Genes and Proteins,Protein families: signaling and cellular processes,2048,Prokaryotic defense system
+44,Genes and Proteins,Protein families: signaling and cellular processes,4030,G protein-coupled receptors
+45,Genes and Proteins,Protein families: signaling and cellular processes,4050,Cytokine receptors
+46,Genes and Proteins,Protein families: signaling and cellular processes,4054,Pattern recognition receptors
+47,Genes and Proteins,Protein families: signaling and cellular processes,3310,Nuclear receptors
+48,Genes and Proteins,Protein families: signaling and cellular processes,4040,Ion channels
+49,Genes and Proteins,Protein families: signaling and cellular processes,4031,GTP-binding proteins
+50,Genes and Proteins,Protein families: signaling and cellular processes,4052,Cytokines and growth factors
+51,Genes and Proteins,Protein families: signaling and cellular processes,4515,Cell adhesion molecules
+52,Genes and Proteins,Protein families: signaling and cellular processes,4090,CD molecules
+53,Genes and Proteins,Protein families: signaling and cellular processes,0535,Proteoglycans
+54,Genes and Proteins,Protein families: signaling and cellular processes,0536,Glycosaminoglycan binding proteins
+55,Genes and Proteins,Protein families: signaling and cellular processes,0537,Glycosylphosphatidylinositol (GPI)-anchored proteins
+56,Genes and Proteins,Protein families: signaling and cellular processes,4091,Lectins
+57,Genes and Proteins,Protein families: signaling and cellular processes,1504,Antimicrobial resistance genes
+58,Genes and Proteins,Protein families: signaling and cellular processes,3200,Viral proteins
+59,Genes and Proteins,RNA family,3100,Non-coding RNAs
+60,Compounds and Reactions,Compounds,8001,Compounds with biological roles
+61,Compounds and Reactions,Compounds,8002,Lipids
+62,Compounds and Reactions,Compounds,8003,Phytochemical compounds
+63,Compounds and Reactions,Compounds,8005,Bioactive peptides
+64,Compounds and Reactions,Compounds,8006,Endocrine disrupting compounds
+65,Compounds and Reactions,Compounds,8007,Pesticides
+66,Compounds and Reactions,Compounds,8008,Carcinogens
+67,Compounds and Reactions,Compounds,8009,Natural toxins
+68,Compounds and Reactions,Compounds,8010,Target-based classification of compounds
+69,Compounds and Reactions,Reactions,8201,Enzymatic reactions
+70,Compounds and Reactions,Reactions,8202,IUBMB reaction hierarchy
+71,Compounds and Reactions,Reactions,8204,Reaction class
+72,Compounds and Reactions,Reactions,8203,Glycosyltransferase reactions
+73,Drugs,Drug classifications,8303,Anatomical Therapeutic Chemical (ATC) classification
+74,Drugs,Drug classifications,8302,USP drug classification
+75,Drugs,Drug classifications,8301,Therapeutic category of drugs in Japan
+76,Drugs,Drug classifications,8303_target,Anatomical Therapeutic Chemical (ATC) classification + Target
+77,Drugs,Drug classifications,8302_target,USP drug classification + Target
+78,Drugs,Drug classifications,8301_target,Therapeutic category of drugs in Japan + Target
+79,Drugs,Drug classifications,8303_enzyme,Anatomical Therapeutic Chemical (ATC) classification + Enzyme
+80,Drugs,Drug classifications,8302_enzyme,USP drug classification + Enzyme
+81,Drugs,Drug classifications,8301_enzyme,Therapeutic category of drugs in Japan + Enzyme
+82,Drugs,Drug classifications,8303_ndc,Anatomical Therapeutic Chemical (ATC) classification + Product (NDC)
+83,Drugs,Drug classifications,8313,Classification of Japanese OTC drugs
+84,Drugs,Drug classifications,8312,Risk category of Japanese OTC drugs
+85,Drugs,Drug classifications,8316,Pharmaceutical additives in Japan
+86,Drugs,Drug classifications,8310,Target-based classification of drugs
+87,Drugs,Other drug information,8311,Drugs listed in the Japanese Pharmacopoeia
+88,Drugs,Other drug information,8331,Animal drugs in Japan
+89,Drugs,Other drug information,8304,Traditional Chinese Medicine in Japan
+90,Drugs,Other drug information,8305,Crude drugs
+91,Drugs,Other drug information,8321,Essential oils
+92,Drugs,Other drug information,8322,Medicinal herbs
+93,Drugs,Other drug information,8323,Major components of natural products
+94,Diseases,Human diseases,8402,Human diseases
+95,Diseases,Human diseases,8401,Infectious diseases
+96,Diseases,Human diseases,8402_gene,Human diseases + Genes
+97,Diseases,Human diseases,8401_genome,Infectious diseases + Genomes
+98,Diseases,Human diseases,8403,Human diseases in ICD-11 classification
+99,Diseases,Human diseases,8411,ICD-11 International Classification of Diseases
+100,Diseases,Human diseases,8410,ICD-10 International Classification of Diseases
+101,Diseases,Human diseases,8420,ICD-O-3 International Classification of Diseases for Oncology
+102,Organisms and Cells,Organisms,8601,KEGG organisms
+103,Organisms and Cells,Organisms,8601_key,KEGG organisms + Keywords
+104,Organisms and Cells,Organisms,8610,KEGG organisms in the NCBI taxonomy
+105,Organisms and Cells,Organisms,8620,KEGG viruses in the NCBI taxonomy
+106,Organisms and Cells,Organisms,8602,Animal classification
+107,Organisms and Cells,Organisms,8603,Plant classification
+108,Organisms and Cells,Organisms,8605,Plant pathogens
+109,Organisms and Cells,Organisms,8607,Endosymbionts
+110,Organisms and Cells,"Cells, tissues, and organs",8501,Human organ systems
+111,Organisms and Cells,"Cells, tissues, and organs",8502,Human cells
