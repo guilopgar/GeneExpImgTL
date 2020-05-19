@@ -4,7 +4,7 @@
 def survival_fixed_time(fix_time, time, event):
     """
     It returns 0 if the individual survives the fixed time point.
-    Else, pit returns 1 if the event occurs before the fixed time point.
+    Else, it returns 1 if the event occurs before the fixed time point.
     None is returned if the individual is censored before the fixed time point.
     """
     if (time > fix_time): return 0
@@ -148,8 +148,8 @@ class EarlyRocAUC(Callback):
 def create_dense_layers(input_layer, dense_unit=None, dense_activation=None, dense_dropout=None, output_unit=None, 
                        output_activation=None):
     """
-    It creates a stack of densely-connected layers and an output layer 
-    on top of a given layer.
+    It creates a stack of fully-connected layers and an output layer 
+    on top of a given input layer.
 
     """
 
@@ -183,21 +183,15 @@ def create_dense_layers(input_layer, dense_unit=None, dense_activation=None, den
 def create_mlnn(input_shape, dense_unit=None, dense_activation=None, dense_dropout=None, output_unit=None, 
                output_activation=None):
     """
-    Generic function that creates a Keras MLNN model, which consists of a series of dense layers (dense,
+    Generic function that creates a Keras MLNN model, which consists of a series of fully-connected layers (dense,
     batch-normalization, activation and dropout), and an output layer.
     
-    :param input_shape: Tuple of integers containing the input shape of the model. The last dimension is assumed 
-                        to contain the number of channels.
-    :param cnn_filter: List of integers containing the number of filters used in each conv2d layer.
-    :param cnn_kernel: List of integers containing the size of the squared kernel used in each conv2d layer.
-    :param cnn_activation: List of strings containing the name of the activation function used in each conv2d layer.
-    :param cnn_pool: List of integers containing the size of the squared max-pool downscale factor used in each conv2d layer.
-    :param cnn_dropout: List of real numbers containing the dropout rate used in each conv2d layer.
+    :param input_shape: Integer containing the number of input units.
     :param dense_unit: List of integers containing the number of units used in each dense layer.
     :param dense_activation: List of strings containing the name of the activation function used in each dense layer.
     :param dense_dropout: List of real numbers containing the dropout rate used in each dense layer.
     :param output_unit: Integer as the number of units used in the output layer.
-    :param output_activation: String as the name of the activation function used the output layer.
+    :param output_activation: String as the name of the activation function used in the output layer.
     
     :returns: Keras functional model, which is not compiled.
     """
@@ -217,7 +211,7 @@ def create_cnn(input_shape, cnn_filter, cnn_kernel, cnn_activation, cnn_pool, cn
                output_activation=None):
     """
     Generic function that creates a Keras 2D-CNN model, which consists of a series of conv2d layers (convolution filter,
-    batch-normalization, activation, max-pooling and dropout), a series of dense layers (dense, batch-normalization, 
+    batch-normalization, activation, max-pooling and dropout), a series of fully-connected layers (dense, batch-normalization, 
     activation and dropout) and an output layer.
     
     It is specially designed to use squared matrices as input data.
@@ -267,82 +261,31 @@ def create_cnn(input_shape, cnn_filter, cnn_kernel, cnn_activation, cnn_pool, cn
 
 
 
-# HERE GUILLE NOW, ERROR: When predicting, take into account that, if output unit is 1, keras model.predict 
-# (equivalent to sklear model.predict_proba) will return an array with shape [n_samples], not [n_samples, n_labels], 
-# as output is only one (sigmoid activation function)
-
 class SklearnMLNN(BaseEstimator, ClassifierMixin):
     """
-    Abstract generic Keras model that acts as a sklearn classifier. It is designed to overcome the tensorflow
+    Abstract generic Keras model that acts as a MLNN sklearn classifier. It is designed to overcome the tensorflow
     GPU memory release bug (https://github.com/tensorflow/tensorflow/issues/17048). Before executing, 
-    no tensorflow session can be active. 
-    
-    Default arguments values are set to perform discrete-time survival prediction.
+    no tensorflow session can be active.
     
     
     Parameters
     ----------
-    model_path : string, default 'keras-models/keras_ann.h5'
-        It stands for the file path of the Keras swallow sequential model that is saved and loaded
+    dense_unit : dict
+        Keys represent the hidden layers indices, and values represent the number of hidden units of the layers.
+    
+    dense_activation : dict
+        Keys represent the hidden layers indices, and values represent the activation functions used in the layers.
+    
+    dense_dropout : dict
+        Keys represent the hidden layers indices, and values represent the dropout rates used in the layers.
+    
+    output_unit : integer
+        Number of units used in the output layer. If 1, the model is assumed to be trained on a binary classification problem.
+    
+    model_path : string
+        It stands for the file path of the Keras model that is saved and loaded
         during training and prediction procedures.
-    
-    n_input : integer, default 100
-        Number of units used at the input layer.
-    
-    n_hidden : integer, default 70
-        Number of units used at the hidden layer.
-    
-    n_output : integer, default 39
-        Number of units used at the output layer.
-    
-    batch_norm : bool, default True
-        If True, Batch-Normalization layer is used at the hidden layer before applying activation function.
-    
-    f_hidden : string, default 'relu'
-        Keras activation function used by the hidden layer.
-    
-    f_output : string, default 'sigmoid'
-        Keras activation function used by the output layer.
         
-    f_loss : function or string, default SurvivalPickable(39)
-        The loss function used to train the model. If string, it must be the name of an 
-        available Keras loss function.
-    
-    opt_name: string, default 'sgd'
-        Name of the Keras optimizer used to train the model. 
-        Available names are 'sgd', 'rmsprop' and 'adam'.
-        
-    lr: numeric, default 0.0005
-        Learning rate used by the optimizer during training.
-    
-    momentum: numeric, default 0.5
-        Momentum used by the SGD algorithm during training.
-        
-    nesterov: bool, default True
-        If True, SGD algorithm uses Nesterov momentum during training.
-    
-    n_epoch: integer, default 20
-        Number of epochs to train the model.
-    
-    batch_size: integer, default 40
-        Number of samples per gradient update used during training.
-    
-    verbose : integer, default 0
-        Verbose parameter of the 'fit' keras function.
-    
-    output_unit: if 1, the model is assumed to be trained on a binary classifcation problem.
-
-
-    Attributes
-    ----------
-    _X : array-like, shape [n_samples, n_features]
-         Input dataset.
-
-    _y : array-like, shape [n_samples]
-         Class labels used to perform model training.
-    
-    _optimizer : Keras optimizer object
-         Keras optimizer used to perform model training.
     """
     
     def __init__(self, input_shape, dense_unit=None, dense_activation=None, dense_dropout=None, output_unit=1, 
@@ -370,15 +313,13 @@ class SklearnMLNN(BaseEstimator, ClassifierMixin):
 
     def _update(self, **kwargs):
         """
-        Private auxiliary function to update dropout and activity regularizer values.
+        Private auxiliary function to update dict attributes.
         
         Parameters
         ----------
         **kwargs : dict, {argument: value}
-            'dropout_A' and 'activity_B' arguments are expected, where the name of the arguments represent the 
-            layer (A or B) where the dropout or activity regularization is applied, and the values are either
-            the dropout rates or the regularizer objects. Theses values are included in the dropout_dict and
-            activity_dict instance attributes, respectively.
+            'dense_unit_A', 'dense_activation_B', 'dropout_C', ..., arguments are expected, where the name of the arguments contains the 
+            layer (e.g. A, B or C) index where the update is applied, and the values are the updated values themselves.
         """
         
         for key, value in kwargs.items():
@@ -454,7 +395,6 @@ class SklearnMLNN(BaseEstimator, ClassifierMixin):
         
         if self.patience > 0:
             # Use 90% of data to train and 10% for early-stopping validation
-            # Stratify according to the censoring time distribution across intervals
             split = list(StratifiedShuffleSplit(n_splits=1, test_size=0.1, random_state=60).split(self._X, self._y))
             X_train = self._X[split[0][0], :]
             # Specific for 1-D label array
@@ -477,7 +417,7 @@ class SklearnMLNN(BaseEstimator, ClassifierMixin):
     
     def fit(self, X, y):
         """
-        Train the model using supervised learning.
+        Train the supervised learning model.
         
         Parameters
         ----------
@@ -543,12 +483,16 @@ class SklearnMLNN(BaseEstimator, ClassifierMixin):
         with Pool(1) as p:
             y_pred = p.apply(self._clf_predict_proba)
         
-        return np.argmax(y_pred, axis=-1)
+        # Binary classification
+        if self.output_unit == 1:
+            return y_pred
+        
+        else: return np.argmax(y_pred, axis=-1)
     
     
     def predict_proba(self, X):
         """
-        Predict labels probaiblities with fitted estimator model.
+        Predict labels probabilities with fitted estimator model.
 
         Parameters
         ----------
@@ -574,83 +518,33 @@ class SklearnMLNN(BaseEstimator, ClassifierMixin):
         
 
 
-# HERE GUILLE NOW, ERROR: When predicting, take into account that, if output unit is 1, keras model.predict 
-# (equivalent to sklear model.predict_proba) will return an array with shape [n_samples], not [n_samples, n_labels], 
-# as output is only one (sigmoid activation function)
-
 class SklearnCNN(SklearnMLNN):
     """
-    Custom sklearn classifier that acts as a Keras CNN model. It extends the simple MLNN architecture implemented 
-    in SklearnMLNN class. Before executing, no tensorflow session can be active. 
-    
-    Default arguments values are set to perform discrete-time survival prediction.
+    Custom sklearn classifier that acts as a Keras CNN model. It extends the basic MLNN architecture implemented 
+    in SklearnMLNN class. Before executing, no tensorflow session can be active.
     
     
     Parameters
     ----------
-    model_path : string, default 'keras-models/keras_ann.h5'
-        It stands for the file path of the Keras swallow sequential model that is saved and loaded
-        during training and prediction procedures.
+    cnn_filter : dict
+        Keys represent the conv2d layers indices, and values the number of filters used in the layers.
     
-    n_input : integer, default 100
-        Number of units used at the input layer.
+    cnn_kernel : dict
+        Keys represent the conv2d layers indices, and values the size of the squared kernel used in the layers.
     
-    n_hidden : integer, default 70
-        Number of units used at the hidden layer.
+    cnn_activation : dict
+        Keys represent the conv2d layers indices, and values the activation functions used in the layers.
     
-    n_output : integer, default 39
-        Number of units used at the output layer.
+    cnn_pool : dict
+        Keys represent the conv2d layers indices, and values the size of the squared max-pool downscale factor used in the layers.
     
-    batch_norm : bool, default True
-        If True, Batch-Normalization layer is used at the hidden layer before applying activation function.
-    
-    f_hidden : string, default 'relu'
-        Keras activation function used by the hidden layer.
-    
-    f_output : string, default 'sigmoid'
-        Keras activation function used by the output layer.
-        
-    f_loss : function or string, default SurvivalPickable(39)
-        The loss function used to train the model. If string, it must be the name of an 
-        available Keras loss function.
-    
-    opt_name: string, default 'sgd'
-        Name of the Keras optimizer used to train the model. 
-        Available names are 'sgd', 'rmsprop' and 'adam'.
-        
-    lr: numeric, default 0.0005
-        Learning rate used by the optimizer during training.
-    
-    momentum: numeric, default 0.5
-        Momentum used by the SGD algorithm during training.
-        
-    nesterov: bool, default True
-        If True, SGD algorithm uses Nesterov momentum during training.
-    
-    n_epoch: integer, default 20
-        Number of epochs to train the model.
-    
-    batch_size: integer, default 40
-        Number of samples per gradient update used during training.
-    
-    verbose : integer, default 0
-        Verbose parameter of the 'fit' keras function.
+    cnn_dropout : dict
+        Keys represent the conv2d layers indices, and values the dropout rates used in the layers.
 
-
-    Attributes
-    ----------
-    _X : array-like, shape [n_samples, n_features]
-         Input dataset.
-
-    _y : array-like, shape [n_samples]
-         Class labels used to perform model training.
-    
-    _optimizer : Keras optimizer object
-         Keras optimizer used to perform model training.
     """
     
     def __init__(self, input_shape, cnn_filter, cnn_kernel, cnn_activation, cnn_pool, cnn_dropout, dense_unit, 
-                 dense_activation, dense_dropout, output_unit, output_activation=None, 
+                 dense_activation, dense_dropout, output_unit=1, output_activation=None, 
                  optimizer_name='adam', lr=0.001, momentum=0.5, nesterov=True, loss_function='binary_crossentropy', 
                  batch_size=32, epoch=10, patience=0, verbose=0, 
                  model_path='keras-models/cnn_pre_train_pfi_hyperopt.h5'):
@@ -672,16 +566,7 @@ class SklearnCNN(SklearnMLNN):
     def _update(self, **kwargs):
         """
         Overrides parent class method.
-
-        Private auxiliary function to update dropout and activity regularizer values. 
         
-        Parameters
-        ----------
-        **kwargs : dict, {argument: value}
-            'dropout_A' and 'activity_B' arguments are expected, where the name of the arguments represent the 
-            layer (A or B) where the dropout or activity regularization is applied, and the values are either
-            the dropout rates or the regularizer objects. Theses values are included in the dropout_dict and
-            activity_dict instance attributes, respectively.
         """
 
         # Call _update method from parent class
@@ -729,18 +614,15 @@ class SklearnCNN(SklearnMLNN):
 def create_fine_tune(pre_layer, n_freeze, pre_model=None, dense_unit=None, dense_activation=None, dense_dropout=None, 
                      output_unit=None, output_activation=None):
     """
-    Generic function that creates a Sequential Keras 2D-CNN model using an already pre-trained 2D-CNN model. The new model is
-    intended to be used for fine-tuning the network, and can be created in two different ways, either fine-tuning
-    the previous model, or substituting the last layers by new final dense layers (including the output).
+    Generic function that creates a Sequential model using an already pre-trained model. The new model is
+    intended to be used for fine-tuning the network, and can be created in two different ways, either using
+    the whole previous model, or substituting the last layers by new final fully-connected layers (including the output layer).
     
-    :param pre_layer: Integer representing the number of layers from the pre-trained model to be included in the new model.
-                      This number is expected to be either the number of total layers or the flatten layer index.
-                      In the first case, the new model is obtained by fine-tuning the pre-trained model, 
-                      and in the latter case the new model is created by adding new dense layers after the flatten layer
-                      of the pre-trained model.
-    :param n_freeze: Integer representing the number of layers to be freezed, i.e. the first n_freeze layers will
+    :param pre_layer: Integer representing the number of layers from the pre-trained model to be included in the new model. For a CNN model, 
+                      this number is expected to be either the number of total layers or the flatten layer index.
+    :param n_freeze: Integer representing the number of layers to be freezed, i.e. the first n_freeze layers from the pre-trained model will
                      be set to be non-trainable.
-    :param pre_model: String containing the file path of a saved Keras model.
+    :param pre_model: String containing the file path of a saved pre-trained Keras model.
     :param dense_unit: List of integers containing the number of units used in each new dense layer.
                        Only used if the model is obtained by adding new dense layers.
     :param dense_activation: List of strings containing the name of the activation function used in each new dense layer.
@@ -795,91 +677,24 @@ def create_fine_tune(pre_layer, n_freeze, pre_model=None, dense_unit=None, dense
 
 
 
-# HERE GUILLE NOW, ERROR: When predicting, take into account that, if output unit is 1, keras model.predict 
-# (equivalent to sklear model.predict_proba) will return an array with shape [n_samples], not [n_samples, n_labels], 
-# as output is only one (sigmoid activation function)
-
 class SklearnFT(SklearnMLNN):
     """
-    Custom sklearn classifier that acts as a Keras MLP model. It is designed to overcome the tensorflow
-    GPU memory release bug (https://github.com/tensorflow/tensorflow/issues/17048). Before executing, 
-    no tensorflow session can be active. 
-    
-    Default arguments values are set to perform discrete-time survival prediction.
+    Custom sklearn classifier to be fine-tuned from a pre-trained Keras model.
     
     
     Parameters
     ----------
-    model_path : string, default 'keras-models/keras_ann.h5'
-        It stands for the file path of the Keras swallow sequential model that is saved and loaded
-        during training and prediction procedures.
+    pre_layer : integer
+        Number of layers from the pre-trained model to be included in the new model. For a CNN model, 
+        this number is expected to be either the number of total layers or the flatten layer index.
     
-    n_input : integer, default 100
-        Number of units used at the input layer.
+    n_freeze : integer
+        Number of layers to be freezed, i.e. the first n_freeze layers from the pre-trained model will
+        be set to be non-trainable.
     
-    n_hidden : integer, default 70
-        Number of units used at the hidden layer.
-    
-    n_output : integer, default 39
-        Number of units used at the output layer.
-    
-    batch_norm : bool, default True
-        If True, Batch-Normalization layer is used at the hidden layer before applying activation function.
-    
-    f_hidden : string, default 'relu'
-        Keras activation function used by the hidden layer.
-    
-    f_output : string, default 'sigmoid'
-        Keras activation function used by the output layer.
-        
-    f_loss : function or string, default SurvivalPickable(39)
-        The loss function used to train the model. If string, it must be the name of an 
-        available Keras loss function.
-    
-    opt_name: string, default 'sgd'
-        Name of the Keras optimizer used to train the model. 
-        Available names are 'sgd', 'rmsprop' and 'adam'.
-        
-    lr: numeric, default 0.0005
-        Learning rate used by the optimizer during training.
-    
-    momentum: numeric, default 0.5
-        Momentum used by the SGD algorithm during training.
-        
-    nesterov: bool, default True
-        If True, SGD algorithm uses Nesterov momentum during training.
-    
-    n_epoch: integer, default 20
-        Number of epochs to train the model.
-    
-    batch_size: integer, default 40
-        Number of samples per gradient update used during training.
-    
-    verbose : integer, default 0
-        Verbose parameter of the 'fit' keras function.
+    pre_model : string
+        File path of a saved pre-trained Keras model.
 
-    len_dense: 4, as 4 Keras layers form a densely connected layer in the pre-trained model.
-
-    add_dense: strongly related to pre_layer, they should be carefully jointly defined.
-
-    pre_layer: it should point to the last layer of the pre-trained model before the
-        stack of densely connected layers.
-    
-    output_unit: if 1, the model is assumed to be trained on a binary classifcation problem.
-
-
-
-
-    Attributes
-    ----------
-    _X : array-like, shape [n_samples, n_features]
-         Input dataset.
-
-    _y : array-like, shape [n_samples]
-         Class labels used to perform model training.
-    
-    _optimizer : Keras optimizer object
-         Keras optimizer used to perform model training.
     """
     
     def __init__(self, pre_layer, n_freeze, pre_model=None, dense_unit=None, dense_activation=None, 
@@ -934,27 +749,32 @@ class HyperoptCV(BaseEstimator, ClassifierMixin):
         Dictionary whose keys are the name of hyper-parameters from the estimator to be optimized and 
         corresponding values are the hyperopt distributions of the hyper-parameters possible values.
     
-    cv : sklearn cross-validation generator
-        Cross-validation procedure used to perform model selection, average test scoring metric is considered.
+    cv : sklearn cross-validation generator or an iterable
+        Cross-validation procedure used to perform model selection, average test scoring metric is considered. See sklearn.model_selection.cross_validate "cv" parameter 
+        (https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html).
         
-    scoring : string, default 'accuracy'
-        Scoring metric used during model selection.
+    scoring : dict
+        Scoring metrics used to evaluate the model. Keys represent the names of the metrics and values are callables.
+        See sklearn.model_selection.cross_validate "scoring" parameter (https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html).
     
-    n_iter : int, default 20
+    opt_metric : string
+        From scoring metrics, the name of the model selection metric considered during the optimization procedure.
+        
+    train_score : bool
+        Whether to compute metrics values on the train subsets during model evaluation. See sklearn.model_selection.cross_validate "return_train_score"
+        parameter (https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html).
+    
+    n_iter : int
         Number of iterations used during bayesian optimization, i.e. maximum number of evaluations performed by 
         the bayesian optimizer.
     
-    random_seed : int, default None
+    random_seed : int
         Integer seed used by the pseudo-random number generator during bayesian optimization.
     
-    
-    Attributes
-    ----------
-    best_estimator_: fitted sklearn estimator object
-        Fitted estimator using the best estimated hyper-parameters configuration.
-    
-    best_trial_: dict
-        Trial data describing the best estimated model.
+    parallel : int
+        Number of CPUs used during model training and evaluation. See sklearn.model_selection.cross_validate "n_jobs"
+        parameter (https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html).
+        
     """
     
     def __init__(self, estimator, hyper_space, cv, scoring='accuracy', opt_metric='accuracy', train_score=False, n_iter=20, 
@@ -974,6 +794,7 @@ class HyperoptCV(BaseEstimator, ClassifierMixin):
         """
         Recursive function to flatten a nested dict. As hyperopt allows to define nested parameters
         in the hyper-parameters space, the nested dict must be flattened before feeding it to the estimator.
+        
         """
         
         return {rec_k: rec_v for v_k, v_v in v.items() for rec_k, rec_v in self._flatten_nested_dict(v_v, v_k).items()} \
@@ -1040,8 +861,9 @@ class HyperoptCV(BaseEstimator, ClassifierMixin):
         self.best_trial_ = self.model_selection(X, y)
         
         # Instantiate estimator model with optimized hyper-params and then fit it
-        self.estimator = self.estimator.set_params(**self.best_trial_['result']['params'])
-        self.best_estimator_ = self.estimator.fit(X, y)
+        self._estimator = clone(self.estimator, safe=True)
+        self._estimator = self._estimator.set_params(**self.best_trial_['result']['params'])
+        self.best_estimator_ = self._estimator.fit(X, y)
         
         return self
 
@@ -1077,7 +899,7 @@ class HyperoptCV(BaseEstimator, ClassifierMixin):
 
         Returns
         -------
-        output : array-like, shape [n_samples]
+        output : array-like, shape [n_samples, n_labels]
         """
         
         if not hasattr(self, 'best_estimator_'):
@@ -1089,43 +911,27 @@ class HyperoptCV(BaseEstimator, ClassifierMixin):
 
 class HyperoptCV_TL(HyperoptCV):
     """
-    Custom sklearn classifier that performs hyperopt-bayesian model selection of a certain estimator using 
-    cross-validation, and then fits the model using the best estimated hyper-parameters configuration.
+    It extends the HyperoptCV class to adapt the hyperopt-bayesian optimization procedure to a transfer learning (TL) approach. 
+    Specifically, the hyper-parameters from both the pre-traing and fine-tuning phases are jointly optimized, maximizing the predictive performance of the fine-tuned model.
     
-    Based on: 
-    https://stackoverflow.com/questions/52408949/cross-validation-and-parameters-tuning-with-xgboost-and-hyperopt
+    Custom class for the hyper-parameters space defined in 3-TL_CNN notebook.
 
 
     Parameters
     ----------
-    estimator : sklearn estimator object
-        This is assumed to implement the scikit-learn estimator interface.
+    estimator_pt : sklearn estimator object
+        It is the estimator trained during the pre-training phase.
     
-    hyper_space : dict
-        Dictionary whose keys are the name of hyper-parameters from the estimator to be optimized and 
-        corresponding values are the hyperopt distributions of the hyper-parameters possible values.
+    X_pt : array-like, shape [n_samples, n_features]
+        Input data used to pre-train the model.
     
-    cv : sklearn cross-validation generator
-        Cross-validation procedure used to perform model selection, average test scoring metric is considered.
+    y_pt : array-like, shape [n_samples]
+        Input labels used to pre-train the model.
         
-    scoring : string, default 'accuracy'
-        Scoring metric used during model selection.
-    
-    n_iter : int, default 20
-        Number of iterations used during bayesian optimization, i.e. maximum number of evaluations performed by 
-        the bayesian optimizer.
-    
-    random_seed : int, default None
-        Integer seed used by the pseudo-random number generator during bayesian optimization.
-    
-    
-    Attributes
-    ----------
-    best_estimator_: fitted sklearn estimator object
-        Fitted estimator using the best estimated hyper-parameters configuration.
-    
-    best_trial_: dict
-        Trial data describing the best estimated model.
+    len_dense : integer
+        Number of Keras layers that form a single fully-connected layer, e.g. four: dense, batch-normalization, activation and dropout.
+        Specific to hyper-parameters spaces where the number of fully-connected layers is considered as a hyper-parameter.
+
     """
     
     def __init__(self, estimator_pt, X_pt, y_pt, estimator_ft, hyper_space, cv, scoring='accuracy', opt_metric='accuracy', 
