@@ -807,8 +807,9 @@ class HyperoptCV(BaseEstimator, ClassifierMixin):
         
         """
         
-        self.estimator.set_params(**self._flatten_nested_dict(params))
-        res_cv = cross_validate(self.estimator, X, y, scoring=self.scoring, cv=self.cv, 
+        self._estimator = clone(self.estimator, safe=True)
+        self._estimator.set_params(**self._flatten_nested_dict(params))
+        res_cv = cross_validate(self._estimator, X, y, scoring=self.scoring, cv=self.cv, 
                                 return_train_score=self.train_score, n_jobs=self.parallel)
         return {'loss': 1. - np.mean(res_cv['test_' + self.opt_metric]), 'params': params, 'score': res_cv, 
                 'status': STATUS_OK}
@@ -862,7 +863,7 @@ class HyperoptCV(BaseEstimator, ClassifierMixin):
         
         # Instantiate estimator model with optimized hyper-params and then fit it
         self._estimator = clone(self.estimator, safe=True)
-        self._estimator = self._estimator.set_params(**self.best_trial_['result']['params'])
+        self._estimator.set_params(**self._flatten_nested_dict(self.best_trial_['result']['params']))
         self.best_estimator_ = self._estimator.fit(X, y)
         
         return self
