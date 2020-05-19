@@ -921,13 +921,16 @@ class HyperoptCV_TL(HyperoptCV):
     Parameters
     ----------
     estimator_pt : sklearn estimator object
-        It is the estimator trained during the pre-training phase.
+        Estimator trained during the pre-training phase.
     
     X_pt : array-like, shape [n_samples, n_features]
         Input data used to pre-train the model.
     
     y_pt : array-like, shape [n_samples]
         Input labels used to pre-train the model.
+    
+    estimator_ft : sklearn estimator object
+        Estimator trained during the fine-tuning phase.
         
     len_dense : integer
         Number of Keras layers that form a single fully-connected layer, e.g. four: dense, batch-normalization, activation and dropout.
